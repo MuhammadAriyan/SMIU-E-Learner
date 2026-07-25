@@ -29,10 +29,3 @@ body {
 .hero{
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
-
-.login {
-  background-image: url('/login/sidepanel.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}

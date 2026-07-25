@@ -22,6 +22,7 @@ const Page: NextPage<Props> = ({}) => {
       <h2 className="p-8 text-6xl text-white pt-0 text-shadow">E-LEARNER</h2>
       <span className="text-white text-2xl text-center leading-none">SMIU E-Learning Website with all the resources and a tutor</span>
       <span className="text-white text-2xl text-center w-xl leading-6 ">E-Learning Platform for SMIU students with all the preparation papers, e-books and AI - Tutor </span>
+    <button className="bg-white text-black hover:bg-gray-200 p-4 px-6 mt-2 rounded-4xl">Get Started</button>
     </div>
   </main>
 }
