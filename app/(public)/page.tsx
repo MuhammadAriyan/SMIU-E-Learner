@@ -18,7 +18,7 @@ const Page: NextPage<Props> = ({}) => {
 </video>
 <div className="mt-36 text-shadow-2xs flex flex-col items-center justify-center hero  p-10 w-full h-full ">
       {/* <Image src="/logo.jpg" alt="" width={150} height={150} className="mx-auto rounded-full"/> */}
-      <h2 className="pt-6 font-extrabold text-4xl tracking-wider text-white w-full text-center shadow-amber-900">SMIU </h2>
+      <h2 className="pt-6 font-extrabold text-4xl tracking-wider text-white w-full text-center">SMIU </h2>
       <h2 className="p-8 text-6xl text-white pt-0  ">E-LEARNER</h2>
       <span className="text-white text-lg sm:text-2xl wrap-break-word  text-center leading-none" >SMIU E-Learning Website with all the resources and a tutor</span>
       <span className="text-white text-lg sm:text-2xl text-center  sm:w-xl wrap-break-words leading-6  ">E-Learning Platform for SMIU students with all the preparation papers, e-books and AI - Tutor </span>

@@ -5,7 +5,7 @@ interface Props {}
 
 const Navbar: NextPage<Props> = ({}) => {
   
-  return<nav className="bg-white flex justify-between items-center">
+  return<nav className="bg-[#f0f7f5]/70  backdrop-blur-3xl flex justify-between items-center">
     <a href="/" className="">
     <Image src="/transparent-logo.png" alt="Logo" width={100} height={50}/>
     </a>
