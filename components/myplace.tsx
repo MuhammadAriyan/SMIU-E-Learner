@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import { NextPage } from 'next'
 import {PlusIcon, BookTextIcon, MoveRightIcon} from 'lucide-react'
 import Markdown from 'react-markdown'
+import ConfigCard from './configCard'
 
   interface Props {}
   
@@ -14,7 +15,9 @@ import Markdown from 'react-markdown'
     const [messageList,setMessageList] = useState<string[]>([])
     const [loading,setLoading] = useState(false)
     const [newChat,setNewChat] = useState(true)
-    const [authenticated,setAuthenticated] = useState(true)
+    const [key,setKey] = useState(true)
+    const [BaseURL,setBaseURL] = useState(true)
+    const [model,setModel] = useState(true)
     
     async function sendMessage(){
       try {
@@ -37,6 +40,13 @@ import Markdown from 'react-markdown'
     }finally {
     setLoading(false)
     }
+  }
+  const hasKey = process.env.API_KEY !== undefined && process.env.API_KEY !== ''
+  const hasBaseURL = process.env.BASE_URL !== undefined && process.env.BASE_URL !== ''
+  const hasModel = process.env.MODEL !== undefined && process.env.MODEL !== ''
+  const isEnvSet = hasKey && hasBaseURL && hasModel
+  if(!key){
+      return (<ConfigCard/>)
   }
 
     return <div className="flex h-screen  overflow-hidden chat bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(240,244,255,0.7)_100%)] ">
