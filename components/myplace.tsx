@@ -1,12 +1,14 @@
 "use client"
-import { useState} from 'react'
+import { useEffect, useState} from 'react'
 import { NextPage } from 'next'
 import {PlusIcon, BookTextIcon, MoveRightIcon} from 'lucide-react'
 import Markdown from 'react-markdown'
+import { createClient } from '@/utils/supabase/client'
 
   interface Props {}
   
   const Myplace: NextPage<Props> = ({}) => {
+    const supabase = createClient()
     const books =["Maths ii", "Calculus iii", "Computer Science", "Algorithms of machine", "Python", "OS"]
     const [showMore, setShowMore] = useState<boolean>(false)
     const [chatHistory, setChatHistory] = useState<string[]>([])
@@ -14,6 +16,25 @@ import Markdown from 'react-markdown'
     const [messageList,setMessageList] = useState<string[]>([])
     const [loading,setLoading] = useState(false)
     const [newChat,setNewChat] = useState(true)
+    const [apiKey,setApiKey] = useState<string>('')
+    const [baseUrl,setBaseUrl] = useState<string>('')
+    const [model,setModel] = useState<string>('')
+    const [error,setError] = useState<string>('')
+    
+
+    useEffect( ()=>{
+      (async function fetchSettings(){
+        const { data: { user } } = await supabase.auth.getUser()
+        if(!user) return
+        const settings = await supabase.from('user_settings').select('api_key, base_url, model').eq('user_id', user.id).maybeSingle()
+        if(settings.data){
+          setApiKey(settings.data.api_key)
+          setBaseUrl(settings.data.base_url)
+          setModel(settings.data.model)
+        }
+      })()   
+    },[])
+
     async function sendMessage(){
       try {
       if(!input?.trim()) return
@@ -21,10 +42,11 @@ import Markdown from 'react-markdown'
       const res = await fetch("/api/chat",{
         method:'POST',
         headers : {'Content-Type' : 'application/json'},
-        body: JSON.stringify({message:input})
+        body: JSON.stringify({message:input, api_key: apiKey, base_url: baseUrl, model: model})
       })
       const data = await res.json()
       const reply = await data.reply
+      if(!reply)throw new Error('No reply from API')
       console.log(reply)
       setNewChat(false)
       setMessageList(prev => [...prev,input,reply ])
@@ -32,14 +54,14 @@ import Markdown from 'react-markdown'
       console.log(messageList)
     }catch (err) {
     console.error('sendMessage failed:', err)
+    setError(err instanceof Error ? err.message : 'An unexpected error occurred')
+    setTimeout(() => setError(''), 3000)
     }finally {
     setLoading(false)
     }
   }
     return <div className="flex h-screen  overflow-hidden chat bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(240,244,255,0.7)_100%)] ">
-      <div className="p-1">
-
-          <div className="p-3 rounded-xl backdrop-blur-lg ring-1 ring-gray-300 bg-white/90 h-screen overflow-y-scroll shadow-2xs ">
+         <div className="p-3 m-2 rounded-xl backdrop-blur-lg ring-1 ring-gray-300 bg-white/90 h-screen overflow-y-scroll shadow-2xs ">
 
             <span className="font-extrabold text-black text-center text-lg block ">SMIU</span>
             <span className="font-extrabold text-black text-center block text-2xl -mt-2">E-Learner</span>
@@ -83,10 +105,12 @@ import Markdown from 'react-markdown'
               ))}
           </ul>
           </div>
-      </div>
+
+
       </div>
 
       <div className="flex-3 grow flex flex-col">
+           {error && <div className="text-red-500 absolute bg-red-200 p-4 text-sm rounded-2xl top-30 left-1/2 ease-in duration-200">{error}</div>}
         {newChat ? <div className="h-full flex flex-col items-center justify-center p-90 ">
         <h6 className='text-xl md:text-4xl pb-1 text-white/80'>Ask Me Anything!</h6>
         <div className="flex items-center rounded-4xl bg-white p-2 backdrop-blur-xs  shadow-2xl">

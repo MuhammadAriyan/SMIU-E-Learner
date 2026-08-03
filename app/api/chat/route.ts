@@ -1,14 +1,5 @@
-import { error } from "console";
-import { Content } from "next/font/google";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-
-const ai = new OpenAI({
-    apiKey : process.env.API_KEY,
-    baseURL : process.env.BASE_URL
-})
-
-
 const SYSTEM_PROMPT = `
 You are SMIU E-Learner, a study assistant for SMIU students.
 
@@ -65,10 +56,14 @@ FULL? Answer at that length only.
 
 export async function POST(req: Request) {
     try {
-        const {message} = await req.json()
-        
+         const body = await req.json();
+        const { message, api_key, base_url, model } = body;
+        const ai = new OpenAI({
+            apiKey : api_key || process.env.API_KEY,
+            baseURL : base_url || process.env.BASE_URL })
+
         const completion =  await ai.chat.completions.create({
-            model : process.env.MODEL || "chatgpt-4o-latest",
+            model : model ||process.env.MODEL || "chatgpt-4o-latest",
             messages : [
                 {
                     role : 'system',

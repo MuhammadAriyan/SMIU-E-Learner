@@ -14,7 +14,7 @@ async function Page(){
   const hasBaseURL = process.env.BASE_URL !== undefined && process.env.BASE_URL !== ''
   const hasModel = process.env.MODEL !== undefined && process.env.MODEL !== ''
   const  settings   = await supabase.from('user_settings').select('api_key, base_url, model').eq('user_id', user.id).maybeSingle()
-  const isEnvSet =  settings.data?.api_key && settings.data?.base_url && settings.data?.model
+  const isEnvSet =  settings.data?.api_key && settings.data?.base_url && settings.data?.model || (hasKey && hasBaseURL && hasModel)
   
   if(!isEnvSet){
     redirect('/configCard')
