@@ -1,7 +1,7 @@
 "use client"
 import { setConfig } from '@/app/actions/setConfig'
 import { NextPage } from 'next'
-import { useState } from 'react'
+import {  useState } from 'react'
 interface Props {className?:string}
 
 const ConfigCard: NextPage<Props> = ({className}) => {
@@ -9,8 +9,8 @@ const ConfigCard: NextPage<Props> = ({className}) => {
   const [baseUrl, setBaseUrl] = useState('')
   const [model, setModel] = useState('')
 
-  return <div className={`flex h-screen w-screen -z-10  justify-center items-center ${className}`}>
 
+  return<div className={`flex chat h-screen w-screen justify-center items-center ${className}`}>
     <div className="bg-white p-4 rounded-lg w-1/2 shadow-md">
       <h3 className="text-lg font-bold mb-2">Configuration</h3>
       <p className="text-gray-600">Manage your settings here.</p>

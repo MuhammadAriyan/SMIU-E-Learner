@@ -1,4 +1,3 @@
-import ConfigCard from '@/components/configCard'
 import Myplace from '@/components/myplace'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
@@ -14,12 +13,13 @@ async function Page(){
   const hasKey = process.env.API_KEY !== undefined && process.env.API_KEY !== ''
   const hasBaseURL = process.env.BASE_URL !== undefined && process.env.BASE_URL !== ''
   const hasModel = process.env.MODEL !== undefined && process.env.MODEL !== ''
-
-  const isEnvSet = hasKey && hasBaseURL && hasModel
-
   const  settings   = await supabase.from('user_settings').select('api_key, base_url, model').eq('user_id', user.id).maybeSingle()
-  console.log(settings)
-  return (isEnvSet ? <Myplace/> : <ConfigCard/>)
+  const isEnvSet =  settings.data?.api_key && settings.data?.base_url && settings.data?.model
+  
+  if(!isEnvSet){
+    redirect('/configCard')
+  }
+  return (<Myplace/>)
 }
 
 export default Page

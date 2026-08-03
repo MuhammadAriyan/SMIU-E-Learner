@@ -4,9 +4,9 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import {User} from   '@supabase/supabase-js'
-import { useRouter } from 'next/navigation'
+import { useRouter} from 'next/navigation'
 import { LogOutIcon, SettingsIcon } from 'lucide-react'
-import ConfigCard from './configCard'
+import { redirect } from 'next/navigation'
 interface Props {}
 
 const Navbar: NextPage<Props> = ({}) => {
@@ -18,6 +18,13 @@ const Navbar: NextPage<Props> = ({}) => {
     supabase.auth.getUser().then((response)=>{setUser(response.data.user)})
     console.log(user)
   },[])
+  async function userSettings(){
+    setShowSettings(!showSettings)
+  }
+
+  if(showSettings){
+    redirect('/configCard')
+  }
 
   async function logout(){
     const {error} = await supabase.auth.signOut()
@@ -25,11 +32,6 @@ const Navbar: NextPage<Props> = ({}) => {
     router.push('/login')
     router.refresh()
   }
-   
-  async function userSettings(){
-    setShowSettings(!showSettings)
-  }
-
   return<nav className="bg-white/90 backdrop-blur-3xl flex z-10 justify-between items-center">
     <a href="/" className="">
     <Image src="/transparent-logo.png" alt="Logo" width={100} height={50}/>
@@ -54,9 +56,6 @@ const Navbar: NextPage<Props> = ({}) => {
       </div>
       )}
     </ul>
-    {showSettings && (
-  <ConfigCard className="absolute top-100 left-1/2 -translate-x-1/2 -translate-y-1/2"/>
-)}
   </nav> 
 }
 

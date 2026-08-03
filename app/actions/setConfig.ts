@@ -1,5 +1,6 @@
 "use server"
 import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
 
 
 export async function setConfig(API_KEY: string, BASE_URL: string, MODEL: string){
@@ -17,5 +18,6 @@ export async function setConfig(API_KEY: string, BASE_URL: string, MODEL: string
     model: MODEL
     })
     console.log(error)
-    // if(error) throw new Error('Error updating user configuration')
+    if(error) throw new Error('Error updating user configuration')
+    redirect('/myplace')
   }
