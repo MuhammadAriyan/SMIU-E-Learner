@@ -11,9 +11,11 @@ export async function setConfig(API_KEY: string, BASE_URL: string, MODEL: string
 
     if(!API_KEY || !BASE_URL || !MODEL) throw new Error('All fields are required')
     const {error} = await supabase.from('user_settings').upsert({
-    user_id: API_KEY,
+    user_id: user.id,
+    api_key: API_KEY,
     base_url: BASE_URL ,
     model: MODEL
     })
-    if(error) throw new Error('Error updating user configuration')
+    console.log(error)
+    // if(error) throw new Error('Error updating user configuration')
   }

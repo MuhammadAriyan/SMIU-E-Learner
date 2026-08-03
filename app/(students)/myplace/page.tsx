@@ -10,12 +10,15 @@ async function Page(){
   const { data: { user } } = await supabase.auth.getUser()
   if(!user)redirect('/login')
 
-  const hasKey = process.env.API_KEY === undefined && process.env.API_KEY !== ''
+  
+  const hasKey = process.env.API_KEY !== undefined && process.env.API_KEY !== ''
   const hasBaseURL = process.env.BASE_URL !== undefined && process.env.BASE_URL !== ''
   const hasModel = process.env.MODEL !== undefined && process.env.MODEL !== ''
-  
+
   const isEnvSet = hasKey && hasBaseURL && hasModel
 
+  const  settings   = await supabase.from('user_settings').select('api_key, base_url, model').eq('user_id', user.id).maybeSingle()
+  console.log(settings)
   return (isEnvSet ? <Myplace/> : <ConfigCard/>)
 }
 

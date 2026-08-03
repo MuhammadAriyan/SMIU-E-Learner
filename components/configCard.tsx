@@ -2,15 +2,16 @@
 import { setConfig } from '@/app/actions/setConfig'
 import { NextPage } from 'next'
 import { useState } from 'react'
-interface Props {}
+interface Props {className?:string}
 
-const ConfigCard: NextPage<Props> = ({}) => {
+const ConfigCard: NextPage<Props> = ({className}) => {
   const [apiKey, setApiKey] = useState('')
   const [baseUrl, setBaseUrl] = useState('')
   const [model, setModel] = useState('')
 
-  return <div className='flex h-screen chat justify-center items-center'>
-    <div className="bg-white p-4 rounded-lg shadow-md">
+  return <div className={`flex h-screen w-screen -z-10  justify-center items-center ${className}`}>
+
+    <div className="bg-white p-4 rounded-lg w-1/2 shadow-md">
       <h3 className="text-lg font-bold mb-2">Configuration</h3>
       <p className="text-gray-600">Manage your settings here.</p>
     <form className="mt-4" onSubmit={async (e) => {
@@ -36,7 +37,7 @@ const ConfigCard: NextPage<Props> = ({}) => {
           <label htmlFor="model" className="block text-gray-700 font-semibold mb-1">Model</label>
           <input type="text" id="model" name="model" value={model} onChange={(e) => setModel(e.target.value)} className="w-full p-2 border border-gray-300 rounded" />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Settings</button>
+        <button type="submit" className="bg-black/80 text-white px-4 py-2 rounded hover:bg-black/60">Save Settings</button>
       </form>
     </div>
   </div>

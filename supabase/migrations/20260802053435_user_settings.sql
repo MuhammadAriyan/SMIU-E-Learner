@@ -8,6 +8,9 @@ CREATE table user_settings (
 
 alter table user_settings enable row level security;
 
+
+grant select, insert, update on public.user_settings to authenticated;
+
 drop policy if exists "Users can view their own settings" on user_settings;
 
 create policy "Users can view their own settings" on user_settings
