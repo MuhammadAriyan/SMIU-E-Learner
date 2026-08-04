@@ -46,11 +46,6 @@ const SignUp: NextPage<Props> = ({}) => {
           }
         }
       })
-      if (result.error){
-        setError(result.error.message)
-        return
-      }
-
       router.push('/myplace')
       router.refresh()
 

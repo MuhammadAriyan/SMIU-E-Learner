@@ -1,5 +1,5 @@
 CREATE table user_settings (
-    user_id uuid references auth.users(id) primary key,
+    user_id uuid references auth.users(id) primary key ,
     api_key text not null,
     base_url text not null,
     model text not null,
