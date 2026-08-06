@@ -41,6 +41,7 @@ const Navbar: NextPage<Props> = ({}) => {
       {user ?(
       <div className="flex gap-3 justify-center items-center">
       <li><a href="/myplace" className="text-black/80 hover:text-black/50  transition duration-300">My Place</a></li>
+      <li><a href="/dashboard" className="text-black/80 hover:text-black/50  transition duration-300">Dashboard</a></li>
         <li>{user.email}</li>
         <li onClick={userSettings}>
           <SettingsIcon className='size-5 '/>
