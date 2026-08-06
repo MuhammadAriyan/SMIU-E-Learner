@@ -14,7 +14,6 @@ const SignUp: NextPage<Props> = ({}) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
     const video= useRef<HTMLVideoElement>(null)
@@ -46,9 +45,12 @@ const SignUp: NextPage<Props> = ({}) => {
           }
         }
       })
-      router.push('/myplace')
-      router.refresh()
-
+      if(result.error){
+        setError(result.error.message)
+        setLoading(false)
+        return
+      }
+      router.push('/login')   
     }
     async function googleSignup() {
     await supabase.auth.signInWithOAuth({
