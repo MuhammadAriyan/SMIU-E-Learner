@@ -41,3 +41,8 @@ body {
   background-size: cover;
 /* background: radial-gradient(circle, rgba(36, 242, 225, 1) 0%, rgba(240, 247, 245, 1) 42%);} */
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
