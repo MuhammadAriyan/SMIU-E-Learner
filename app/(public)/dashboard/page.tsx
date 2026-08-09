@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 import { createClient } from '@/utils/supabase/client'
 import { useEffect, useState } from 'react'
-import { ChevronDown, ChevronUp, LayoutDashboard } from 'lucide-react'
+import { ChevronDown, ChevronUp, LayoutDashboard, MoveLeft } from 'lucide-react'
 import Image from 'next/image'
 
 interface Props {}
@@ -20,6 +20,7 @@ const Page: NextPage<Props> = ({}) => {
   const [role, setRole] = useState<string | null>(null)
   const [color, setColor] = useState<string | null>(null)
   const [showAll, setShowAll] = useState<boolean>(false)
+  const [readMode,setReadMode] = useState<boolean>(false)
   // Define the type for a book
 
 // Array of programming books with cover URLs
@@ -180,6 +181,8 @@ const dummyBooks:Book[] = [
   const visibleBooks = showAll ? dummyBooks : dummyBooks.slice(0, 6)
 
   return <div className='h-screen w-screen p-3 text-xl  bg-[#f1f1f1]/30 '>
+    {readMode! ?
+    <div className="">
     <div className="bg-white/90 shadow-2xs  m-2 p-6 md:text-3xl rounded-lg backdrop-blur-md flex items-center gap-1 "><LayoutDashboard/>Dashboard</div>
     <div className="bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md ">
     
@@ -208,7 +211,9 @@ const dummyBooks:Book[] = [
         <h2>Your Books</h2>
         <div className="grid grid-cols-3">
           {visibleBooks.map((book,index)=>(
-            <div className="flex gap-3 items-center p-1 animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 " key={index}>
+            <div 
+            className="flex gap-3 items-center p-1 animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 " 
+            key={index} onClick={()=>setReadMode(!readMode)}>
               <Image src={book.coverUrl} alt={`${book.title} cover`} width={30} height={30} className='rounded-xs'/>{book.title}</div>
           ))
           }
@@ -216,6 +221,13 @@ const dummyBooks:Book[] = [
           { dummyBooks.length > 6 &&  <button className='flex justify-center w-screen ' onClick={()=>setShowAll(!showAll)}>
             {showAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
             </button>}
-      </div>
+      </div></div>:
+      <div className='h-screen w-screen animate-[fadeIn_1s_ease-in-out] transition-all px-5 bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md '>
+        <div className='flex items-center' onClick={()=>setReadMode(!readMode)}>
+          <MoveLeft className='m-2 p-1 text-white bg-black rounded-2xl'/>
+          Back
+          </div>
+        <iframe src='http://www.uml.org.cn/c++/pdf/DesignPatterns.pdf'  className='h-full w-full'></iframe>
+        </div>}
   </div>}
-export default Page
+export default Page 
