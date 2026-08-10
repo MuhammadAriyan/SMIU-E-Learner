@@ -4,7 +4,6 @@ import { createClient } from '@/utils/supabase/client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, LayoutDashboard, MoveLeft } from 'lucide-react'
 import Image from 'next/image'
-
 interface Props {}
 interface Book {
   id: number;
@@ -13,6 +12,12 @@ interface Book {
   isbn: string;          // used to construct the cover URL
   coverUrl: string;      // full URL to the cover image
 }
+interface Profile {
+  user_id: string
+  full_name: string
+  role: string
+  created_at: string
+}
 
 const Page: NextPage<Props> = ({}) => {
   const supabase = createClient()
@@ -20,7 +25,9 @@ const Page: NextPage<Props> = ({}) => {
   const [role, setRole] = useState<string | null>(null)
   const [color, setColor] = useState<string | null>(null)
   const [showAll, setShowAll] = useState<boolean>(false)
+  const [profileShowAll, setProfileShowAll] = useState<boolean>(false)
   const [readMode,setReadMode] = useState<boolean>(false)
+  const [profiles,setProfiles] = useState<Profile[]>([])
   // Define the type for a book
 
 // Array of programming books with cover URLs
@@ -177,6 +184,18 @@ const dummyBooks:Book[] = [
     getUser()
   },[])
 
+  useEffect(()=>{
+    async function fetchAllUser(){
+     const { data: profiles, error } = await supabase
+  .from('profile')
+  .select('*'); 
+  console.log(profiles)
+  console.log(error)
+  if(profiles)setProfiles(profiles)
+  const visibleBooks = showAll ? profiles : profiles?.slice(0, 6)
+    }
+    fetchAllUser()
+  },[])
 
   const visibleBooks = showAll ? dummyBooks : dummyBooks.slice(0, 6)
 
@@ -221,7 +240,31 @@ const dummyBooks:Book[] = [
           { dummyBooks.length > 6 &&  <button className='flex justify-center w-screen ' onClick={()=>setShowAll(!showAll)}>
             {showAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
             </button>}
-      </div></div>:
+      </div>
+      
+      // profile system
+      <div className="">
+    
+
+    
+    <div className="animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 text-lg px-5 bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md ">
+        <h2>Profile</h2>
+        <div className="grid grid-cols-3">
+          {profiles && profiles.map((book,index)=>(
+            <div 
+            className="flex gap-3 items-center p-1 animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 " 
+            key={index} onClick={()=>setReadMode(!readMode)}>
+              {/* <Image src={book} alt={`${book} cover`} width={30} height={30} className='rounded-xs'/> */}
+              {book.full_name}</div>
+          ))
+          }
+          </div>
+          { dummyBooks.length > 6 &&  <button className='flex justify-center w-screen ' onClick={()=>setShowAll(!showAll)}>
+            {showAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
+            </button>}
+      </div></div>
+      </div>
+      :
       <div className='h-screen w-screen animate-[fadeIn_1s_ease-in-out] transition-all px-5 bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md '>
         <div className='flex items-center' onClick={()=>setReadMode(!readMode)}>
           <MoveLeft className='m-2 p-1 text-white bg-black rounded-2xl'/>
