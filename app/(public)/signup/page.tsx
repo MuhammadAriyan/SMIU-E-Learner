@@ -60,6 +60,7 @@ const SignUp: NextPage<Props> = ({}) => {
       },
     })
     }
+    
 
     return <main className="flex justify-center items-center" >
       <video ref={video} autoPlay muted loop playsInline className="absolute top-0 left-0 w-full h-full object-cover z-[-1]">

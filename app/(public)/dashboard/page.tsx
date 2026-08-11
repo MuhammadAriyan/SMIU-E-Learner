@@ -17,6 +17,7 @@ interface Profile {
   full_name: string
   role: string
   created_at: string
+  avatar_url: string
 }
 
 const Page: NextPage<Props> = ({}) => {
@@ -164,6 +165,7 @@ const dummyBooks:Book[] = [
       const { data: { user } } = await supabase.auth.getUser()
       if(user){
         const { data, error } = await supabase.from('profile').select().eq('user_id', user.id).single()
+        
         console.log(data)
         console.log(error)
         if(data){
@@ -191,9 +193,7 @@ const dummyBooks:Book[] = [
   .select('*'); 
   console.log(profiles)
   console.log(error)
-  if(profiles)setProfiles(profiles)
-  const visibleBooks = showAll ? profiles : profiles?.slice(0, 6)
-    }
+  if(profiles)setProfiles(profiles)}
     fetchAllUser()
   },[])
 
@@ -251,7 +251,7 @@ const dummyBooks:Book[] = [
             <div 
             className="flex gap-3 items-center p-1 animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 " 
             key={index} >
-              {/* <Image src={book} alt={`${book} cover`} width={30} height={30} className='rounded-xs'/> */}
+              <Image src={ profile.avatar_url } alt={`${profile} avatar`} width={30} height={30} className='rounded-4xl'/>
               {profile.full_name}</div>
           ))
           }

@@ -3,25 +3,32 @@ import { createClient } from '@/utils/supabase/client'
 import { NextPage } from 'next'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import {User} from   '@supabase/supabase-js'
 import { useRouter} from 'next/navigation'
 import { LogOutIcon, SettingsIcon } from 'lucide-react'
 import { redirect } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
 interface Props {}
 
 const Navbar: NextPage<Props> = ({}) => {
   const router = useRouter()
-  const supabase = createClient()
-  const [user,setUser] = useState<User|null>(null)
+  const [user,setUser] = useState<User | null>(null)
+  const [avatarURL,setAvatarURL] = useState<any>('/placeholder.jpeg')
   const [showSettings,setShowSettings] = useState(false)
+  const supabase = createClient()
+  
   useEffect(()=>{
-    supabase.auth.getUser().then((response)=>{setUser(response.data.user)})
-    console.log(user)
+    async function getUser(){
+    const  { data: { user } } = await supabase.auth.getUser()
+    setUser(user)
+    const {data} = await supabase.from('profile').select('*')
+    .eq('user_id', user?.id).maybeSingle()
+    setAvatarURL(data.avatar_url)
+    console.log(user)}   
+    getUser()
   },[])
   async function userSettings(){
     setShowSettings(!showSettings)
-  }
-
+  } 
   if(showSettings){
     redirect('/configCard')
   }
@@ -43,6 +50,7 @@ const Navbar: NextPage<Props> = ({}) => {
       <li><a href="/myplace" className="text-black/80 hover:text-black/50  transition duration-300">My Place</a></li>
       <li><a href="/dashboard" className="text-black/80 hover:text-black/50  transition duration-300">Dashboard</a></li>
         <li>{user.email}</li>
+        <Image src={ avatarURL || '/placeholder.jpg'} alt='' className='rounded-4xl' width={30} height={30}/>
         <li onClick={userSettings}>
           <SettingsIcon className='size-5 '/>
         </li>
