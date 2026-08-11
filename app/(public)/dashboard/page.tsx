@@ -200,7 +200,7 @@ const dummyBooks:Book[] = [
   const visibleBooks = showAll ? dummyBooks : dummyBooks.slice(0, 6)
 
   return <div className='h-screen w-screen p-3 text-xl  bg-[#f1f1f1]/30 '>
-    {readMode! ?
+    {!readMode ?
     <div className="">
     <div className="bg-white/90 shadow-2xs  m-2 p-6 md:text-3xl rounded-lg backdrop-blur-md flex items-center gap-1 "><LayoutDashboard/>Dashboard</div>
     <div className="bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md ">
@@ -242,25 +242,22 @@ const dummyBooks:Book[] = [
             </button>}
       </div>
       
-      // profile system
-      <div className="">
-    
 
-    
+      <div className="">
     <div className="animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 text-lg px-5 bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md ">
         <h2>Profile</h2>
         <div className="grid grid-cols-3">
-          {profiles && profiles.map((book,index)=>(
+          {profiles && profiles.map((profile,index)=>(
             <div 
             className="flex gap-3 items-center p-1 animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 " 
-            key={index} onClick={()=>setReadMode(!readMode)}>
+            key={index} >
               {/* <Image src={book} alt={`${book} cover`} width={30} height={30} className='rounded-xs'/> */}
-              {book.full_name}</div>
+              {profile.full_name}</div>
           ))
           }
           </div>
-          { dummyBooks.length > 6 &&  <button className='flex justify-center w-screen ' onClick={()=>setShowAll(!showAll)}>
-            {showAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
+          { profiles.length > 6 &&  <button className='flex justify-center w-screen ' onClick={()=>setProfileShowAll(!profileShowAll)}>
+            {profileShowAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
             </button>}
       </div></div>
       </div>
