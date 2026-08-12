@@ -7,6 +7,7 @@ import { useRouter} from 'next/navigation'
 import { LogOutIcon, SettingsIcon } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
+import Avatar from './avatar'
 interface Props {}
 
 const Navbar: NextPage<Props> = ({}) => {
@@ -43,15 +44,15 @@ const Navbar: NextPage<Props> = ({}) => {
     <a href="/" className="">
     <Image src="/transparent-logo.png" alt="Logo" width={100} height={50}/>
     </a>
-    <ul className="flex space-x-4 mr-2">
+    <ul className="flex space-x-4 mr-2 items-center">
       <li><a href="/" className="text-black/80 hover:text-black/50  transition duration-300">Home</a></li>
       {user ?(
       <div className="flex gap-3 justify-center items-center">
       <li><a href="/myplace" className="text-black/80 hover:text-black/50  transition duration-300">My Place</a></li>
       <li><a href="/dashboard" className="text-black/80 hover:text-black/50  transition duration-300">Dashboard</a></li>
         <li>{user.email}</li>
-        <Image src={ avatarURL || '/placeholder.jpg'} alt='' className='rounded-4xl' width={30} height={30}/>
-        <li onClick={userSettings}>
+        <Avatar className='size-8'/>
+         <li onClick={userSettings}>
           <SettingsIcon className='size-5 '/>
         </li>
         <li onClick={logout}>

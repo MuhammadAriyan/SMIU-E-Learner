@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/client'
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, LayoutDashboard, MoveLeft } from 'lucide-react'
 import Image from 'next/image'
+import Avatar from '@/components/avatar'
 interface Props {}
 interface Book {
   id: number;
@@ -206,6 +207,7 @@ const dummyBooks:Book[] = [
     <div className="bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md ">
     
     <div className="flex pt-2 px-2 gap-1 items-center">
+      <Avatar className='size-14 mr-2 shadow-2xs'/>
       <div className=" animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 text-2xl">Hey, </div>
       {name && (
         <div className="font-bold rounded-lg animate-[fadeIn_1s_ease-in-out] transition-all duration-1000 text-2xl">

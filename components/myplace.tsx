@@ -108,7 +108,6 @@ import { createClient } from '@/utils/supabase/client'
 
 
       </div>
-
       <div className="flex-3 grow flex flex-col">
            {error && <div className="text-red-500 absolute bg-red-200 p-4 text-sm rounded-2xl top-30 left-1/2 ease-in duration-200">{error}</div>}
         {newChat ? <div className="h-full flex flex-col items-center justify-center p-90 ">
