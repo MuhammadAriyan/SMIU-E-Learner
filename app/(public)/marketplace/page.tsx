@@ -12,7 +12,6 @@ const Page: NextPage<Props> = ({}) => {
         <input type="text" name="" id="" className='w-full h-10  focus:outline-0 ' />
     </form>
     <div className="flex pt-2 px-2 gap-1 items-center">
-    
     </div>
     </div>
   </div>

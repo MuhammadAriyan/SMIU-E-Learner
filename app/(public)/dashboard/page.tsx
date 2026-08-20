@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 import { createClient } from '@/utils/supabase/client'
 import { useEffect, useState } from 'react'
-import { ChevronDown, ChevronUp, LayoutDashboard, MoveLeft } from 'lucide-react'
+import { ChevronDown, ChevronUp, FileUpIcon, LayoutDashboard, MoveLeft } from 'lucide-react'
 import Image from 'next/image'
 import Avatar from '@/components/avatar'
 interface Props {}
@@ -262,6 +262,24 @@ const dummyBooks:Book[] = [
             {profileShowAll ? <ChevronUp className='bg-black rounded-4xl text-white/80'/>:<ChevronDown className='bg-black rounded-4xl text-white/80'/>}
             </button>}
       </div></div>
+       <div className="bg-white/90 m-2 p-4 rounded-lg shadow-2xs text-lg backdrop-blur-md px-5">
+       <h2>Upload Books</h2>
+       <form className='space-y-3'>
+       <label htmlFor="fileuploader" className='' ><FileUpIcon className='shadow-sm p-4 size-20 rounded-2xl'/></label>
+          <input 
+            type="file" 
+            name="" 
+            id="fileuploader" 
+            accept=".pdf,.epub,.mobi" 
+            className='hidden'
+            />
+            <input type="text" name="" id="" className='py-1 mt-2 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Book Title '/>
+            <input type="text" name="" id="" className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Subject '/>
+            <input type="text" name="" id="" className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Code '/>
+          <textarea rows={4} cols={50} placeholder="Description " className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl'></textarea>
+          <input type="submit" value="Submit" className='text-white bg-black p-2 px-3 rounded-2xl w-[36%] hover:bg-black/80 transition-all duration-200'/>
+          </form>
+       </div>
       </div>
       :
       <div className='h-screen w-screen animate-[fadeIn_1s_ease-in-out] transition-all px-5 bg-white/90 m-2 p-4 rounded-lg shadow-2xs backdrop-blur-md '>
