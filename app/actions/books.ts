@@ -7,7 +7,6 @@ export async function addBook(formData: {
   author?: string
   code?: string
   subject?: string
-
   file_url?: string
 }) {
   const supabase = await createClient()
