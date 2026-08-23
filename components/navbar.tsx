@@ -13,7 +13,6 @@ interface Props {}
 const Navbar: NextPage<Props> = ({}) => {
   const router = useRouter()
   const [user,setUser] = useState<User | null>(null)
-  const [avatarURL,setAvatarURL] = useState<any>('/placeholder.jpeg')
   const [showSettings,setShowSettings] = useState(false)
   const supabase = createClient()
   
@@ -21,10 +20,7 @@ const Navbar: NextPage<Props> = ({}) => {
     async function getUser(){
     const  { data: { user } } = await supabase.auth.getUser()
     setUser(user)
-    const {data} = await supabase.from('profile').select('*')
-    .eq('user_id', user?.id).maybeSingle()
-    setAvatarURL(data.avatar_url)
-    console.log(user)}   
+    } 
     getUser()
   },[])
   async function userSettings(){
