@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, FileUpIcon, LayoutDashboard, MoveLeft } from 'lucide-react'
 import Image from 'next/image'
 import Avatar from '@/components/avatar'
+import { addBook } from '@/app/actions/books'
 
 interface Props {}
 
@@ -38,6 +39,10 @@ const Page: NextPage<Props> = ({}) => {
   const [readMode, setReadMode] = useState<boolean>(false)
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
+  const [formData, setFormData] = useState({ title: '', author: '', subject: '', code: '' })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadMessage, setUploadMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
 
   // derived from role — mirrors canAddBooks in app/books/page.tsx
   const canAddBooks = CAN_UPLOAD_ROLES.includes(role ?? '')
@@ -157,6 +162,70 @@ const Page: NextPage<Props> = ({}) => {
     setSelectedBook(null)
   }
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFile(e.target.files[0])
+    }
+  }
+
+  const handleBookSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!selectedFile) {
+      setUploadMessage({ type: 'error', text: 'Please select a file' })
+      return
+    }
+
+    if (!formData.title.trim()) {
+      setUploadMessage({ type: 'error', text: 'Please enter a book title' })
+      return
+    }
+
+    setUploading(true)
+    setUploadMessage(null)
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      const fileName = `${user.id}/${Date.now()}-${selectedFile.name}`
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('books')
+        .upload(fileName, selectedFile)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('books')
+        .getPublicUrl(fileName)
+
+      const result = await addBook({
+        title: formData.title,
+        author: formData.author || undefined,
+        subject: formData.subject || undefined,
+        code: formData.code || undefined,
+        file_url: publicUrl
+      })
+
+      if (result.error) {
+        setUploadMessage({ type: 'error', text: result.error })
+      } else {
+        setUploadMessage({ type: 'success', text: 'Book uploaded successfully!' })
+        setFormData({ title: '', author: '', subject: '', code: '' })
+        setSelectedFile(null)
+      }
+    } catch (err) {
+      setUploadMessage({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed' })
+    } finally {
+      setUploading(false)
+    }
+  }
+
   return (
     <div className='h-screen w-screen p-3 text-xl bg-[#f1f1f1]/30'>
       {!readMode ? (
@@ -230,26 +299,70 @@ const Page: NextPage<Props> = ({}) => {
             </div>
           </div>
 
-          {/* Upload Books — gated the same way as AddBookButton in app/books/page.tsx.
-              role is null until the profile fetch resolves, so canAddBooks is
-              false-by-default and only opens up once we know the role. */}
           {canAddBooks && (
             <div className="bg-white/90 m-2 p-4 rounded-lg shadow-2xs text-lg backdrop-blur-md px-5">
               <h2>Upload Books</h2>
-              <form className='space-y-3' onSubmit={(e) => e.preventDefault()}>
-                <label htmlFor="fileuploader"><FileUpIcon className='shadow-sm p-4 size-20 rounded-2xl' /></label>
+              <form className='space-y-3' onSubmit={handleBookSubmit}>
+                <label htmlFor="fileuploader" className='cursor-pointer block'>
+                  <FileUpIcon className='shadow-sm p-4 size-20 rounded-2xl' />
+                  {selectedFile && <p className='text-sm mt-2'>Selected: {selectedFile.name}</p>}
+                </label>
                 <input
                   type="file"
                   name="file"
                   id="fileuploader"
                   accept=".pdf,.epub,.mobi"
+                  onChange={handleFileChange}
                   className='hidden'
                 />
-                <input type="text" name="title" className='py-1 mt-2 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Book Title ' />
-                <input type="text" name="subject" className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Subject ' />
-                <input type="text" name="code" className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl' placeholder='Enter Code ' />
-                <textarea rows={4} cols={50} name="description" placeholder="Description " className='py-1 px-2 flex items-end focus:outline-0 shadow-sm rounded-xl'></textarea>
-                <input type="submit" value="Submit" className='text-white bg-black p-2 px-3 rounded-2xl w-[36%] hover:bg-black/80 transition-all duration-200' />
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleFormChange}
+                  className='py-1 mt-2 px-2 w-full focus:outline-0 shadow-sm rounded-xl'
+                  placeholder='Enter Book Title'
+                  disabled={uploading}
+                />
+                <input
+                  type="text"
+                  name="author"
+                  value={formData.author}
+                  onChange={handleFormChange}
+                  className='py-1 px-2 w-full focus:outline-0 shadow-sm rounded-xl'
+                  placeholder='Enter Author'
+                  disabled={uploading}
+                />
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleFormChange}
+                  className='py-1 px-2 w-full focus:outline-0 shadow-sm rounded-xl'
+                  placeholder='Enter Subject'
+                  disabled={uploading}
+                />
+                <input
+                  type="text"
+                  name="code"
+                  value={formData.code}
+                  onChange={handleFormChange}
+                  className='py-1 px-2 w-full focus:outline-0 shadow-sm rounded-xl'
+                  placeholder='Enter Code'
+                  disabled={uploading}
+                />
+                {uploadMessage && (
+                  <div className={`p-2 rounded-xl ${uploadMessage.type === 'error' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                    {uploadMessage.text}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className='text-white bg-black p-2 px-3 rounded-2xl w-[36%] hover:bg-black/80 transition-all duration-200 disabled:opacity-50'
+                >
+                  {uploading ? 'Uploading...' : 'Submit'}
+                </button>
               </form>
             </div>
           )}

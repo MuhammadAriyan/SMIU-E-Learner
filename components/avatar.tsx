@@ -7,7 +7,7 @@
     interface Props {className?:string}
     const Avatar: NextPage<Props> = ({className}) => {
         const [user,setUser]=useState<User | null>(null)
-        const [avatarURL,setAvatarURL]=useState('/placeholder.jpeg')
+        const [avatarURL,setAvatarURL]=useState('/placeholder.jpg')
 
 
         const supabase = createClient()
